@@ -1,0 +1,1 @@
+Example use of Espresso UI testing, using a Recyclerview, animations, and testing Activities separately.
