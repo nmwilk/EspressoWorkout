@@ -20,7 +20,7 @@ import butterknife.OnLongClick;
 /**
  * Simple vertical list of {@link TextView}, {@link RecyclerView} and {@link Button}.
  */
-public class MainActivity extends AppCompatActivity implements SimpleListAdapter.SelectionListener {
+public class MainActivity extends AppCompatActivity implements SimpleListAdapter.SelectionListener, MainView {
     public static final int REQUEST_OPEN_NEXT_SCREEN = 1;
 
     private final List<String> items = Arrays.asList("Do to the Beast", "Black Love", "Gentlemen", "Up in it", "Congregation", "1965", "Big Top Halloween", "Unbreakable", "Historectomy", "Uptown Avondale", "Live at Howlin'Wolf");
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements SimpleListAdapter
     @Bind(R.id.selected_item)
     TextView selectedItem;
 
+    private MainPresenterImpl presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,32 +45,47 @@ public class MainActivity extends AppCompatActivity implements SimpleListAdapter
         list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         list.setAdapter(new SimpleListAdapter(items, this));
 
-        selectedItem.setText("");
+        presenter = new MainPresenterImpl(this);
+        presenter.screenCreated();
     }
 
-    @SuppressWarnings("unused")
     @OnClick(R.id.button)
-    public void itemSelected() {
-        startActivityForResult(SecondActivity.createLaunchIntent(this, (String) selectedItem.getText()), REQUEST_OPEN_NEXT_SCREEN);
+    public void buttonClicked() {
+        presenter.itemChosen((String) selectedItem.getText());
     }
 
     @OnLongClick(R.id.selected_item)
-    public boolean clearSelected() {
-        valueSelected("");
+    public boolean listItemLongClicked() {
+        presenter.itemCleared();
         return true;
+    }
+
+    @Override
+    public void valueSelected(final String value) {
+        presenter.itemSelected(value);
     }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_OPEN_NEXT_SCREEN) {
-            clearSelected();
+            presenter.itemCleared();
         }
     }
 
     @Override
-    public void valueSelected(final String value) {
+    public void setValue(final String value) {
         selectedItem.setText(value);
         submit.setVisibility(value == null || value.length() == 0 ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void clearValue() {
+        setValue("");
+    }
+
+    @Override
+    public void openSecondScreen(final String itemChosen) {
+        startActivityForResult(SecondActivity.createLaunchIntent(this, itemChosen), REQUEST_OPEN_NEXT_SCREEN);
     }
 }
