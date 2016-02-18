@@ -27,7 +27,7 @@ import butterknife.OnLongClick;
 public class MainActivity extends AppCompatActivity implements SimpleListAdapter.SelectionListener {
     public static final int REQUEST_OPEN_NEXT_SCREEN = 1;
 
-    private final List<String> items = Arrays.asList("Do to the Beast", "Black Love", "Gentlemen", "Up in it", "Congregation", "1965", "Big Top Halloween", "Unbreakable", "Historectomy", "Uptown Avondale", "Live at Howlin'Wolf");
+    private final List<String> items = Arrays.asList("Do to the Beast", "Black Love", "Gentlemen", "Up in it", "Congregation", "1965", "Big Top Halloween", "Unbreakable", "Historectomy", "Uptown Avondale", "Live at Howlin' Wolf");
 
     @Bind(R.id.button)
     Button submit;
