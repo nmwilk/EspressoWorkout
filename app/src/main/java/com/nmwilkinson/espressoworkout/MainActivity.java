@@ -1,10 +1,14 @@
 package com.nmwilkinson.espressoworkout;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,7 +39,12 @@ public class MainActivity extends AppCompatActivity implements SimpleListAdapter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).inflateTransition(R.transition.second_activity_enter));
+        }
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
@@ -49,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements SimpleListAdapter
     @SuppressWarnings("unused")
     @OnClick(R.id.button)
     public void itemSelected() {
-        startActivityForResult(SecondActivity.createLaunchIntent(this, (String) selectedItem.getText()), REQUEST_OPEN_NEXT_SCREEN);
+        final Pair<View, String> pair = new Pair<View, String>(selectedItem, getResources().getString(R.string.transition_name_album_title));
+        final Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, pair).toBundle();
+        startActivityForResult(SecondActivity.createLaunchIntent(this, (String) selectedItem.getText()), REQUEST_OPEN_NEXT_SCREEN, bundle);
     }
 
     @OnLongClick(R.id.selected_item)

@@ -2,8 +2,11 @@ package com.nmwilkinson.espressoworkout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionInflater;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -20,10 +23,17 @@ public class SecondActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.second_activity_enter));
+        }
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_second);
 
         ButterKnife.bind(this);
+
+        ViewCompat.setTransitionName(displayedItem, getResources().getString(R.string.transition_name_album_title));
 
         displayedItem.setText(getIntent().getStringExtra(KEY_DISPLAY_ITEM_TEXT));
     }
